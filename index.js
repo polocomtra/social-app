@@ -5,6 +5,10 @@ const mongoose=require('mongoose');
 const expressValidator = require('express-validator');
 const bodyParser=require('body-parser');
 const cookieParser=require('cookie-parser');
+const fs=require('fs');
+const cors=require('cors');
+
+//configuration
 
 dotenv.config();
 const app=express();
@@ -35,6 +39,7 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(expressValidator());
 app.use(cookieParser());
+app.use(cors());
 app.use('/',postRoutes);
 app.use('/',authRoutes);
 app.use('/',userRoutes);
@@ -47,7 +52,18 @@ app.use(function (err, req, res, next) {
 
 
 
-
+//Get endpoints
+app.get('/',(req,res)=>{
+    fs.readFile("docs/api-docs.json",(err,result)=>{
+        if(err){
+            return res.json({
+                error:err
+            })
+        }
+        const data=JSON.parse(result);
+        res.json(data);
+    })
+})
 
 
 

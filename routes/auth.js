@@ -10,6 +10,8 @@ router.post('/signup',signupValidator,signup);
 router.post('/signin',signin);
 router.get('/signout',signout);
 
-//any routs has userId, our app will execute userById first
+//any rout containing userId, our app will execute userById first
 router.param('userId',userById);
+
+
 module.exports=router;

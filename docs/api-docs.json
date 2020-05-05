@@ -1,0 +1,12 @@
+{
+    "/":"Get all endpoints",
+    "/signin":"Sign in",
+    "/signup":"Sign up",
+    "/signout":"Sign out",
+    "/posts":"Get all posts",
+    "/post/by/:userId":"Get post by user",
+    "/post/new/:userId":"Create new post",
+    "/post/:postId":"Update / Delete post",
+    "/users":"Get all users",
+    "/user/:userId":"Get / Update / Delete user"
+}
