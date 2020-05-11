@@ -1,7 +1,6 @@
 const mongoose=require('mongoose');
 const uuid=require('uuid');
 const crypto = require('crypto');
-const bcrypt=require('bcrypt');
 
 const userSchema=new mongoose.Schema({
     name:{
@@ -23,7 +22,14 @@ const userSchema=new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    updated:Date
+    updated:Date,
+    photo:{
+        data: Buffer,
+        contentType: String
+    },
+    about:{
+        type:String
+    }
 });
 
 userSchema.virtual('password')
