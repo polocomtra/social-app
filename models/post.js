@@ -15,6 +15,8 @@ const postSchema=new mongoose.Schema({
         data: Buffer,
         contentType: String
     },
+    //thuộc tính này trỏ đến Model User ( tức là thuộc tính này là một User )
+    // nếu dùng trỏ kiểu này thì type:mongoose.Schema.ObjectId
     postedBy:{
         type:mongoose.Schema.ObjectId,
         ref:"User"

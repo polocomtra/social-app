@@ -15,7 +15,6 @@ const userSchema=new mongoose.Schema({
     },
     hashed_password:{
         type: String,
-        
     },
     salt:String,
     created:{
@@ -32,6 +31,7 @@ const userSchema=new mongoose.Schema({
     }
 });
 
+//created hashed_password via virtual password
 userSchema.virtual('password')
     .set(function(password){
         this._password=password;

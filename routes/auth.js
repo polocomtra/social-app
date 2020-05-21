@@ -10,7 +10,7 @@ router.post('/signup',signupValidator,signup);
 router.post('/signin',signin);
 router.get('/signout',signout);
 
-//any rout containing userId, our app will execute userById first
+//bất cứ một lối nào chứa Endpoint là :userId, thì sẽ thực thi userById trước
 router.param('userId',userById);
 
 

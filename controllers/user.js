@@ -4,19 +4,26 @@ const formidable=require('formidable');
 const fs=require('fs');
 
 exports.userById=(req,res,next,id)=>{
+    //thực hiện tìm kiếm theo Id
     User.findById(id).exec((error,result)=>{
+        //nếu không thấy
         if(error || !result){
             return res.status(400).json({
                 message:"User not found!"
             })
         }
-        //add new property to req
+        //nếu thấy
+            //gán kết quả khi tìm được vào thuộc tính mới tạo ( profile ) của request 
         req.profile=result;
+        //qua middleware kế tiếp
         next();
     })
 }
 
+//nếu được ủy thác
+
 exports.hasAuthorization=(req,res)=>{
+    //req.auth có được khi hàm requiredSignin chạy và thêm mới một thuộc tính
     const authorized=req.profile && req.auth && req.profile._id===req.auth._id;
     if(!authorized){
         return res.status(403).json({
@@ -24,6 +31,8 @@ exports.hasAuthorization=(req,res)=>{
         })
     }
 }
+
+//liệt kê tất cả các users
 
 exports.allUsers=(req,res)=>{
     User.find((err,users)=>{
@@ -33,33 +42,27 @@ exports.allUsers=(req,res)=>{
             })
         }
         res.status(200).json(users)
+        //.select là để chọn ra những trường nào cần gửi về client
     }).select("email name created updated")
 }
 
+//lấy về 1 user
+
 exports.getUser=(req,res)=>{
+    //gán 2 cái này bằng undefine để phía client không nhận được 2 thuộc tính này, 
+    //nếu mà không làm vậy thì client biết hết pass rồi, khá toang
     req.profile.hashed_password=undefined;
     req.profile.salt=undefined;
     return res.json(req.profile);
 }
 
-// exports.updateUser=(req,res)=>{
-//     let user=req.profile;
-//     user=_.extend(user,req.body);
-//     user.updated=Date.now();
-//     user.save((err)=>{
-//         if(err){
-//             return res.status(400).json({
-//                 error:"You are not authorized to perform this action"
-//             })
-//         }
-//         user.hashed_password=undefined;
-//         user.salt=undefined;
-//         res.json({user})
-//     })
-// }
+// cập nhật thông tin User
+
 exports.updateUser=(req,res)=>{
+    //cái này hình như có thể thay thế bằng : let form= formidable({ multiples: true });
     let form=new formidable.IncomingForm();
     form.keepExtensions=true;
+    //fields là text các trường, files là file
     form.parse(req,(err,fields,files)=>{
         if(err){
             return res.status(400).json({
@@ -68,6 +71,8 @@ exports.updateUser=(req,res)=>{
         }
         //save user
         let user=req.profile;
+        //nhớ update thì dùng method extend của lodash, update user bằng trường fields trong form
+        //mà client gửi lên
         user=_.extend(user,fields);
         user.updated=Date.now();
         if(files.photo){
@@ -83,18 +88,25 @@ exports.updateUser=(req,res)=>{
             }
             user.hashed_password=undefined;
             user.salt=undefined;
+            //save xong thì nhớ trả về
             res.json(user);
         })
     })
 }
 
+//nhận photo từ client
+
 exports.photoUser=(req,res,next)=>{
     if(req.profile.photo.data){
+        //res.set(header,value)
         res.set("Content-Type",req.profile.photo.contentType);
+        //nhận vô cái gì trả về cái đó
         return res.send(req.profile.photo.data);
     }
     next();
 }
+
+//xóa user
 
 exports.deleteUser=(req,res)=>{
     let user=req.profile;
